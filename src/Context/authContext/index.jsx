@@ -67,10 +67,21 @@ export function AuthProvider({ children }) {
 
   const fetchUser = async () => {
     try {
+      // Get accessToken from cookies
+      const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+        const [name, value] = cookie.trim().split('=');
+        acc[name] = value;
+        return acc;
+      }, {});
+      const accessToken = cookies.accessToken;
+
       const response = await axios.get(
         import.meta.env.VITE_BACKEND_BASE_URL + "/user/get-user",
         {
           withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
         }
       );
 
